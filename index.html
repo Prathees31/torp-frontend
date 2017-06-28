@@ -208,7 +208,7 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
 					</div>
 				</div>
     
-				<div class="col-md-7">
+				<div class="col-md-7" style="border-left: 1px solid #fff;height: 670px;">
 					<div>
 						<h2 class="text-center">Current System Status</h2>
 					</div>
@@ -234,34 +234,36 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
           
 					<div class="col-md-12">
           <hr>
+          <div class="odo-content">
 						<div>
 						  <h2 class="text-center">Yield Overview</h2>
 						</div>
-            <div class="odo-content">
-            <div class="col-md-12">
-              <table class="table">
-                    <thead>
-                      <tr>
-                        <th class="no-padding"><button type="button" id="today"  class="button"><span>Today</span></button</th>
-                        <th class="no-padding"><button type="button" id="monthly" class="button"><span>Monthly</span></button></th>
-                        <th class="no-padding"><button type="button" id="yearly" class="button"><span>Yearly</span></button></th>
-                        <th class="no-padding"><button type="button" id="total" class="button"><span>Total</span></button></th>
-                      </tr>
-                    </thead>
-              </table>
-            </div>
-            <div class="col-md-12">
+            
+              <div class="col-md-12">
                 <table class="table">
-                     <thead>
-                      <tr>
-                        <th class="today"><div id="today" class="odometer">100.00</div></th>
-                        <th class="monthly"><div id="monthly" class="odometer">1,234.56</div></th>
-                        <th class="yearly"><div id="yearly" class="odometer">123,456.12</div></th>
-                        <th class="total"><div id="total" class="odometer">123,456.12</div></th>
-                      </tr>
-                    </thead>
+                      <thead>
+                        <tr>
+                          <th class="no-padding"><button type="button" id="today"  class="button"><span>Today</span></button></th>
+                          <th class="no-padding"><button type="button" id="monthly" class="button"><span>Monthly</span></button></th>
+                          <th class="no-padding"><button type="button" id="yearly" class="button"><span>Yearly</span></button></th>
+                          <th class="no-padding"><button type="button" id="total" class="button"><span>Total</span></button></th>
+                        </tr>
+                      </thead>
                 </table>
+              </div>
+              <div class="col-md-12">
+                  <table class="table">
+                       <thead>
+                        <tr>
+                          <th class="today"><div id="today" class="odometer">100.00</div></th>
+                          <th class="monthly"><div id="monthly" class="odometer">1,234.56</div></th>
+                          <th class="yearly"><div id="yearly" class="odometer">123,456.12</div></th>
+                          <th class="total"><div id="total" class="odometer">123,456.12</div></th>
+                        </tr>
+                      </thead>
+                  </table>
             </div>
+
 						<!-- <div class="col-md-12">
 
 							<ul class="list-inline text-center">
@@ -293,9 +295,11 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
             <div id="monthlydiv" class="content col-md-12">
                 <!-- <div id="chart_div"></div> -->
                 <div>
-                <button class="button pull-right" type="button" id="back">back</button>
-              </div>
-                <h3>Monthly div</h3>
+                  <button class="button pull-right" type="button" id="back">back</button>
+                </div>
+               <div id="chart_div5" class="col-md-12">
+                
+                </div>
             </div>
             <div id="yearlydiv" class="content col-md-12">
                 <!-- <div id="chart_div"></div> -->
@@ -313,43 +317,13 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
             </div>
 					</div>
 					<div class="col-md-12">
-          <!-- <div class="navigation">
-              <button class="but" type="button" id="addteam">Add New Team</button>
-              <button class="but" type="button" id="addplayer">Add New Player</button>
-              <button class="but" type="button" id="addgame">Add New Game</button> 
-              <button class="but" type="button" id="deleteteam">Delete Team</button>
-              <button class="but" type="button" id="deleteplayer">Delete Player</button>
-              <button class="but" type="button" id="deletegame">Delete Game</button>
-              <button class="but" type="button" id="addplayermatch">Add Player To Match</button>
-              <button class="but" type="button" id="deleteplayermatch">Remove Player From Match</button>
-             <div id="addplayerdiv" class="content">
-                <h2>Add New Player</h2>
-                <form ...>
-                </form>
-            </div>
-            <div id="addteamdiv" class="content">
-                <h2>Add New Team</h2>
-                <form ...>
-                </form>
-            </div> -->
+          
           </div>
-        				<!-- <iframe scrolling="no" src="about:blank" name="myiframe1" id="myiframeid"> 
-        				</iframe>
-        			<iframe src="about:blank" name="myiframe2" id="myiframeid2"> 
-        			</iframe>
-           					<iframe height="50%" width="60%" align="right" style="position:absolute;border: 3px solid black;right:0px; top:355px;" scrolling="no" frameBorder="0"
-            			src="about:blank" name="myiframe4" id="myiframeid4"> -->
+        				
     			</div>
 				</div>
 				</div>
-				<!-- <div class="col-md-12">
-				<div class="col-md-6">
-					<img src="images/solarpower.jpg" class="img-responsive center-block" alt="Smiley face" height="165" width="370">
-				</div>
-				<div class="col-md-6">
-					<img src="images/solarpower.jpg" class="img-responsive center-block" alt="Smiley face" height="165" width="370">
-				</div>
-				</div> -->
+				
 		
 		</div>	
 	</div>
@@ -530,11 +504,46 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
 
         // Set chart options
         var options = {'title':'How Much Pizza I Ate Last Night',
-                       'width':400,
-                       'height':300};
+                       'width':300,
+                       'height':200};
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows([
+          ['Mushrooms', 3],
+          ['Onions', 1],
+          ['Olives', 1],
+          ['Zucchini', 1],
+          ['Pepperoni', 2]
+        ]);
+
+        // Set chart options
+        var options = {'title':'How Much Pizza I Ate Last Night',
+                       'width':300,
+                       'height':200};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div5'));
         chart.draw(data, options);
       }
     </script>
