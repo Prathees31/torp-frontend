@@ -1,0 +1,542 @@
+<!-- <?php 
+session_start();
+$_POST['plantid']=9;
+?>
+
+<?php
+   $host        = "host = 35.165.7.5";
+   $port        = "port = 5432";
+   $dbname      = "dbname = plantmgmt";
+   $credentials = "user = postgres password=admin";
+
+   $db = pg_connect( "$host $port $dbname $credentials"  );
+   if(!$db) {
+      echo "Error : Unable to open database"."<br>";
+    } 
+     else {
+       echo "Opened database successfully"."<br>";
+    }
+    $_SESSION["pid"]=$_POST['plantid'];
+$result = pg_query($db, "SELECT * FROM pwr_plant WHERE pwrplantid='$_POST[plantid]';");
+   while($row = pg_fetch_row($result)) {
+
+        $name=$row[2];
+        $address=$row[16];
+        $capacity=$row[4];
+        $cd=$row[25];
+     }
+    pg_close($db);
+
+?>
+
+<?php
+   $host        = "host = 35.165.7.5";
+   $port        = "port = 5432";
+   $dbname      = "dbname = plantmgmt";
+   $credentials = "user = postgres password=admin";
+
+   $db = pg_connect( "$host $port $dbname $credentials"  );
+   if(!$db) {
+      echo "Error : Unable to open database"."<br>";
+    } 
+   //  else {
+   //    echo "Opened database successfully"."<br>";
+   // }
+    $a=9;
+   $result = pg_query($db, "SELECT irradiancefromplantid FROM pwr_plant WHERE pwrplantid=$a;");//userspecified
+   if($row = pg_fetch_assoc($result)) 
+   {
+      $rid=$row['irradiancefromplantid'];
+   }
+   if($rid==0)
+   {
+    $rid=$a;//'$_POST[plantid]''//user specified
+   }
+   $irr='n';
+   $result2 = pg_query($db, "SELECT * FROM pwr_plantdata WHERE pwrplantdatats < '2017-06-28' AND pwrplantdatats > NOW() AND plantdatairradiance > -1 and forplantid = $rid LIMIT 1;");
+                    if($row2 = pg_fetch_row($result2)) 
+                   {
+                      $ir=$row2[5];
+                   }
+                   $result3=pg_query($db,"SELECT max(plantdatairradiance) as mir FROM pwr_plantdata WHERE forplantid=$rid;");
+                   if($row3=pg_fetch_assoc($result3))
+                   {
+                    $maxir=$row3['mir'];
+                   }
+                    $result4=pg_query($db,"SELECT plantpower,pwrplantdatats FROM pwr_plantdata WHERE forplantid=$rid and pwrplantdatats < '2017-06-28' and pwrplantdatats > NOW() and plantpower > 0 LIMIT 1;");
+                   if($row4=pg_fetch_assoc($result4))
+                   {
+                    $power=$row4['plantpower'];
+                    $time2=$row4['pwrplantdatats'];
+                   }
+    $mir=ceil($maxir/100)*100;
+   
+    pg_close($db);
+
+?> 
+
+<?php
+   $host        = "host = 35.165.7.5";
+   $port        = "port = 5432";
+   $dbname      = "dbname = plantmgmt";
+   $credentials = "user = postgres password=admin";
+
+   $db = pg_connect( "$host $port $dbname $credentials"  );
+   if(!$db) {
+      echo "Error : Unable to open database"."<br>";
+    } 
+     else {
+       echo "Opened database successfully"."<br>";
+    }
+$result = pg_query($db, "SELECT (SELECT max(meterreading) as m1 FROM  pwr_plantdata WHERE pwrplantdatats > '2017-06-01' AND 
+pwrplantdatats < '2017-07-01' AND meterreading <> 0 AND forplantid='$_POST[plantid]') - (SELECT min(meterreading) as m2 FROM  pwr_plantdata WHERE pwrplantdatats > '2017-06-01' AND 
+pwrplantdatats < '2017-07-01' AND meterreading <> 0 AND forplantid='$_POST[plantid]' ) AS month;");
+   if($row = pg_fetch_assoc($result)) {
+
+      $monthly=$row['month'];
+     }
+     $result1 = pg_query($db, "SELECT (SELECT max(meterreading) as m1 FROM  pwr_plantdata WHERE pwrplantdatats > '2016-01-01' AND 
+pwrplantdatats < '2017-01-01' AND meterreading <> 0 AND forplantid='$_POST[plantid]') - (SELECT min(meterreading) as m2 FROM  pwr_plantdata WHERE pwrplantdatats > '2016-01-01' AND 
+pwrplantdatats < '2017-01-01' AND meterreading <> 0 AND forplantid='$_POST[plantid]' ) AS year;");
+   if($row1 = pg_fetch_assoc($result1)) {
+
+      $yearly=$row1['year'];
+     }
+
+     $result2 = pg_query($db, "SELECT max(meterreading) as m1 FROM  pwr_plantdata WHERE pwrplantdatats > '2016-01-01' AND 
+pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';");
+   if($row2 = pg_fetch_assoc($result2)) {
+
+      $total=$row2['m1'];
+     }
+   $result3 = pg_query($db, "SELECT pwrplantdatats as p1,max(plantcurdayenegry) as today
+   FROM pwr_plantdata
+   WHERE forplantid='$_POST[plantid]' and pwrplantdatats > NOW() and pwrplantdatats < '2017-06-28'
+   GROUP BY pwrplantdatats
+   ORDER BY pwrplantdatats;");
+   if($row3 = pg_fetch_assoc($result3)) {
+
+      $today=$row3['today'];
+     }
+    pg_close($db);
+
+?>-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Solar Data Visulazation</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/odometer-theme.css">
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="col-md-12" class="plant">
+			<div class="row">
+			
+				<div class="col-md-5">
+					<div>
+						<h2 class="text-center">Plant Description</h2>
+					</div>
+					<div class="col-md-12">
+						<img src="images/solarpower.jpg" style="width: 219px;" class="plant-image img-responsive center-block" alt="Smiley face">
+					</div>
+					<div class="col-md-12 text-center plant-selection">
+						<form name="insert" class="form-inline" action="index.php" method="POST">
+							<select name="plantid" class="form-control">
+							  <option value="1">BMW</option>
+							  <option value="9">Brakes India-ABS,Padi</option>
+							  <option value="11">BECTON DICKINSON BAWAL</option>
+							  <option value="12">TEL</option>
+							  <option value="14">Sunbeam-GDC</option>
+							  <option value="15">Sunbeam-Maruti</option>
+							  <option value="16">Lingaya-Main</option>
+							  <option value="17">Lingaya-Computer</option>
+							  <option value="18">Lingaya-Komati</option>
+							  <option value="19">MJ Logistics</option>
+							  <option value="20">Amtek</option>
+							  <option value="21">Brakes India-SS, Padi</option>
+							  <option value="22">Brakes India-U24, Padi</option>
+							  <option value="23">Brakes India-EMR, Padi</option>
+							  <option value="24">Brakes India-ERD, Padi</option>
+							  <option value="25">Brakes India-U21,Padi</option>
+							  <option value="26">TEST</option>
+							  <option value="27">ATL Chennai</option>
+							  <option value="28">DTVS-Oragadam-P1a</option>
+							  <option value="29">DTVS-Oragadam-P1b</option>
+							  <option value="30">DTVS-Oragadam-P2</option>
+							  <option value="32">DTVS-Mannur-DI</option>
+							  <option value="33">DTVS-Mannur-UPCR</option>
+							  <option value="34">DTVS-Mannur-Tech.Center</option>
+							  <option value="35">DTVS-Mannur-Production</option>
+							  <option value="36">Mettembert_1</option>
+							  <option value="37">Capricorn-Krishnagiri</option>
+							  <option value="38">TEST-CATL</option>
+							  <option value="39">MTAB</option>
+							  <option value="40">ATL Limda</option>
+							  <option value="41">SSN-Test</option>
+						</select>
+						<input type="submit" class="btn btn-default"/>
+						<!-- <?php
+						if(isset($_POST['submit']))
+						{
+						  echo "<meta http-equiv='refresh' content='0'>";
+						}
+						?> -->
+						</form>
+					</div>
+					<div class="col-md-12">
+						<address>
+   						<!-- <?php echo $address ?> <br> -->
+ 						 </address>
+					</div>
+					<div class="col-md-6">
+						<ul class="list-group">
+						  <li class="list-group-item">Plant Capacity :<?php echo floatval($capacity) ?></li>
+						  <li class="list-group-item">Commissioning Date :<?php echo $cd ?></li>
+						  <li class="list-group-item">Status<span class="dot dot-green"><span class="dot-inner"></span></span></li>
+						  <li class="list-group-item">CO2 Savings :</li>
+						  <li class="list-group-item">Reimbursement :</li>
+						</ul>	
+					</div>
+					<div class="col-md-6 text-center">
+						<a target="_blank" href="http://www.booked.net/weather/new-delhi-18038"><img src="https://w.bookcdn.com/weather/picture/1_18038_1_1_137AE9_160_ffffff_333333_08488D_1_ffffff_333333_0_6.png?scode=124&domid=w209&anc_id=83491"  alt="booked.net"/></a>
+					</div>
+				</div>
+    
+				<div class="col-md-7">
+					<div>
+						<h2 class="text-center">Current System Status</h2>
+					</div>
+					<div class="col-md-12">
+						<div class="g row">
+    					<div id="chart_div1" class="sidegauge col-md-4" ">
+                
+              </div>
+    					<div id="chart_div2" class="gauge col-md-4">
+                
+              </div>
+    					<div id="chart_div3" class="sidegauge col-md-4">
+                
+              </div>
+    					<div class="radiance col-md-12">
+                <div class="col-md-4"><p class="text-center">Watt/sq.meter</p></div>
+                <div class="col-md-4"><p class="text-center">K.Watt </p></div>
+                <div class="col-md-4"><p class="text-center">Percentage</p></div>
+				        <p>12:30  <?php echo $time2 ?>  12:32</p>
+				    </div>
+				   </div>
+					</div>
+          
+					<div class="col-md-12">
+          <hr>
+						<div>
+						  <h2 class="text-center">Yield Overview</h2>
+						</div>
+            <div class="odo-content">
+            <div class="col-md-12">
+              <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="no-padding"><button type="button" id="today"  class="button"><span>Today</span></button</th>
+                        <th class="no-padding"><button type="button" id="monthly" class="button"><span>Monthly</span></button></th>
+                        <th class="no-padding"><button type="button" id="yearly" class="button"><span>Yearly</span></button></th>
+                        <th class="no-padding"><button type="button" id="total" class="button"><span>Total</span></button></th>
+                      </tr>
+                    </thead>
+              </table>
+            </div>
+            <div class="col-md-12">
+                <table class="table">
+                     <thead>
+                      <tr>
+                        <th class="today"><div id="today" class="odometer">100.00</div></th>
+                        <th class="monthly"><div id="monthly" class="odometer">1,234.56</div></th>
+                        <th class="yearly"><div id="yearly" class="odometer">123,456.12</div></th>
+                        <th class="total"><div id="total" class="odometer">123,456.12</div></th>
+                      </tr>
+                    </thead>
+                </table>
+            </div>
+						<!-- <div class="col-md-12">
+
+							<ul class="list-inline text-center">
+								<li><button type="button" id="today"  class="button"><span>Today</span></button></li>
+								<li><button type="button" id="monthly" class="button"><span>Monthly</span></button></li>
+								<li><button type="button" id="yearly" class="button"><span>Yearly</span></button></li>
+								<li><button type="button" id="total" class="button"><span>Total</span></button></li>
+                
+							
+						</div>
+						<div class="col-md-12">
+							<ul class="hide-li list-inline text-center">
+								<li id="today" class="odometer">100.00</li>
+								<li id="monthly" class="odometer">1,234.56</li>
+								<li id="yearly" class="odometer">123,456.12</li>
+								<li id="total" class="odometer">123,456.12</li>
+							</ul>
+							
+						</div> -->
+            </div>
+            <div id="todaydiv" class="content col-md-12">
+              <div>
+                <button class="button pull-right" type="button" id="back">back</button>
+              </div>
+              <div id="chart_div" class="col-md-12">
+                
+              </div>
+            </div>
+            <div id="monthlydiv" class="content col-md-12">
+                <!-- <div id="chart_div"></div> -->
+                <div>
+                <button class="button pull-right" type="button" id="back">back</button>
+              </div>
+                <h3>Monthly div</h3>
+            </div>
+            <div id="yearlydiv" class="content col-md-12">
+                <!-- <div id="chart_div"></div> -->
+                <div>
+                <button class="button pull-right" type="button" id="back">back</button>
+              </div>
+                <h3>yearly div</h3>
+            </div>
+            <div id="totaldiv" class="content col-md-12">
+                <div>
+                <button class="button pull-right" type="button" id="back">back</button>
+              </div>
+                <!-- <div id="chart_div"></div> -->
+                <h3>total div</h3>
+            </div>
+					</div>
+					<div class="col-md-12">
+          <!-- <div class="navigation">
+              <button class="but" type="button" id="addteam">Add New Team</button>
+              <button class="but" type="button" id="addplayer">Add New Player</button>
+              <button class="but" type="button" id="addgame">Add New Game</button> 
+              <button class="but" type="button" id="deleteteam">Delete Team</button>
+              <button class="but" type="button" id="deleteplayer">Delete Player</button>
+              <button class="but" type="button" id="deletegame">Delete Game</button>
+              <button class="but" type="button" id="addplayermatch">Add Player To Match</button>
+              <button class="but" type="button" id="deleteplayermatch">Remove Player From Match</button>
+             <div id="addplayerdiv" class="content">
+                <h2>Add New Player</h2>
+                <form ...>
+                </form>
+            </div>
+            <div id="addteamdiv" class="content">
+                <h2>Add New Team</h2>
+                <form ...>
+                </form>
+            </div> -->
+          </div>
+        				<!-- <iframe scrolling="no" src="about:blank" name="myiframe1" id="myiframeid"> 
+        				</iframe>
+        			<iframe src="about:blank" name="myiframe2" id="myiframeid2"> 
+        			</iframe>
+           					<iframe height="50%" width="60%" align="right" style="position:absolute;border: 3px solid black;right:0px; top:355px;" scrolling="no" frameBorder="0"
+            			src="about:blank" name="myiframe4" id="myiframeid4"> -->
+    			</div>
+				</div>
+				</div>
+				<!-- <div class="col-md-12">
+				<div class="col-md-6">
+					<img src="images/solarpower.jpg" class="img-responsive center-block" alt="Smiley face" height="165" width="370">
+				</div>
+				<div class="col-md-6">
+					<img src="images/solarpower.jpg" class="img-responsive center-block" alt="Smiley face" height="165" width="370">
+				</div>
+				</div> -->
+		
+		</div>	
+	</div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/loader.js"></script>
+<script src="js/odometer.js"></script>
+<script type="text/javascript">
+    function myFunction() {
+        var content = document.getElementById("iframecontent").innerHTML;
+        var iframe = document.getElementById("myiframeid");
+
+        var frameDoc = iframe.document;
+        if (iframe.contentWindow)
+            frameDoc = iframe.contentWindow.document;
+
+        frameDoc.open();
+        frameDoc.writeln(content);
+        frameDoc.close();
+
+        var content2 = document.getElementById("iframecontent2").innerHTML;
+        var iframe2 = document.getElementById("myiframeid2");
+
+        var frameDoc2 = iframe2.document;
+        if (iframe2.contentWindow)
+            frameDoc2 = iframe2.contentWindow.document;
+
+        frameDoc2.open();
+        frameDoc2.writeln(content2);
+        frameDoc2.close();
+
+
+        var content4 = document.getElementById("iframecontent4").innerHTML;
+        var iframe4 = document.getElementById("myiframeid4");
+
+        var frameDoc4 = iframe4.document;
+        if (iframe4.contentWindow)
+            frameDoc4 = iframe4.contentWindow.document;
+
+        frameDoc4.open();
+        frameDoc4.writeln(content4);
+        frameDoc4.close();
+    }
+</script>
+<script type="text/javascript">
+          google.charts.load('current', {'packages':['gauge']});
+          google.charts.setOnLoadCallback(drawChart);
+          function drawChart() {
+          var data1 = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Radiance', 50]
+          ]);
+          var data2=google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Power', 200]
+          ]);
+        var data3=google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['PR', 57]
+        ]);
+        var option1 = {
+          width: 130, 
+          height: 130,
+          redFrom: 90, 
+          redTo: 100,
+          yellowFrom:75, 
+          yellowTo: 90,
+          minorTicks: 5,
+            animation:{
+            duration: 400,
+            easing: 'inAndOut',
+           },
+          max: 1200
+        };
+          var option2 = {
+          width: 200, 
+          height: 200,
+          redFrom: 90, 
+          redTo: 100,
+          yellowFrom:75, 
+          yellowTo: 90,
+          minorTicks: 5,
+             animation:{
+            duration: 400,
+            easing: 'inAndOut',
+           },
+          max: 120
+        };
+          var option3 = {
+          width: 130, 
+          height: 130,
+          redFrom: 90, 
+          redTo: 100,
+          yellowFrom:75, 
+          yellowTo: 90,
+          minorTicks: 5,
+             animation:{
+            duration: 400,
+            easing: 'inAndOut',
+           },
+          max: 100
+        };
+        var chart1 = new google.visualization.Gauge(document.getElementById('chart_div1'));
+        var chart2 = new google.visualization.Gauge(document.getElementById('chart_div2'));
+        var chart3 = new google.visualization.Gauge(document.getElementById('chart_div3'));
+        chart1.draw(data1, option1);
+        chart2.draw(data2, option2);
+        chart3.draw(data3, option3);
+        setInterval(function() {
+          data1.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data1, option1);
+        }, 13000);
+        setInterval(function() {
+          data2.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data2, option2);
+        }, 5000);
+        setInterval(function() {
+          data3.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart2.draw(data3, option3);
+        }, 26000);
+      }
+    </script>
+<script>
+	$( document ).ready(function() {
+      console.log( "ready!" );
+	});
+</script>
+<script type="text/javascript">
+  $(function() {
+  $(".button").on("click",function(e) {
+    e.preventDefault();
+    $(".content").hide();
+    $("#"+this.id+"div").show();
+  });
+});
+</script>
+<script type="text/javascript">
+  $(function() {
+  $(".button").on("click",function() {
+    $(".odo-content").hide();
+  });
+});
+</script>
+<script type="text/javascript">
+  $(function() {
+  $("#back").on("click",function() {
+    $("#"+this.id+"div").show();
+    $(".odo-content").show();
+  });
+});
+</script>
+
+<script type="text/javascript">
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows([
+          ['Mushrooms', 3],
+          ['Onions', 1],
+          ['Olives', 1],
+          ['Zucchini', 1],
+          ['Pepperoni', 2]
+        ]);
+
+        // Set chart options
+        var options = {'title':'How Much Pizza I Ate Last Night',
+                       'width':400,
+                       'height':300};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+
+</html>
