@@ -10,10 +10,10 @@ $_SESSION["pid"]=$_POST['plantid'];
     $year1=date('Y-m-d',strtotime('first day of January'.$year));
     $year2=date('Y-m-d', strtotime('first day of January '.date('Y') ));
     $year3=date('Y-m-d',strtotime('first day of January'.$yearplus));
-    $host        = "host = 35.165.7.5";
+    $host        = "host = 35.161.9.218";
    $port        = "port = 5432";
    $dbname      = "dbname = plantmgmt";
-   $credentials = "user = postgres password=admin";
+   $credentials = "user = postgres password=postgres";
    $db = pg_connect( "$host $port $dbname $credentials"  );
    if(!$db) {
       echo "Error : Unable to open database"."<br>";
@@ -24,7 +24,7 @@ $_SESSION["pid"]=$_POST['plantid'];
         $address=$row[16];
         $chars = preg_split("/,/", $address, -1, PREG_SPLIT_NO_EMPTY);
         $capacit=$row[4];
-        $cd=$row[25];
+        //$cd=$row[25];
         $capacity=floatval($capacit);
         $co2x=$row[10];
      }
@@ -43,8 +43,8 @@ $_SESSION["pid"]=$_POST['plantid'];
                    {
                       $ir=$row2['plantdatairradiance'];
                       $timestamp1=$row2['pwrplantdatats'];
-                      $createDate = new DateTime($timestamp1);
-                      $time1 = $createDate->format('H:i:s');
+                      // $createDate = new DateTime($timestamp1);
+                      // $time1 = $createDate->format('H:i:s');
                    }
     $result3=pg_query($db,"SELECT max(plantdatairradiance) as mir FROM pwr_plantdata WHERE forplantid=$rid;");
     if($row3=pg_fetch_assoc($result3))
@@ -66,8 +66,8 @@ $_SESSION["pid"]=$_POST['plantid'];
     }
     $mir=ceil($maxir/100)*100;
     $result6 = pg_query($db, "SELECT (SELECT max(meterreading) as m1 FROM  pwr_plantdata WHERE pwrplantdatats > '$month1' AND 
-pwrplantdatats < '$month2' AND meterreading <> 0 AND forplantid='$_POST[plantid]') - (SELECT min(meterreading) as m2 FROM  pwr_plantdata WHERE pwrplantdatats > '$month1' AND 
-pwrplantdatats < '$month2' AND meterreading <> 0 AND forplantid='$_POST[plantid]' ) AS month;");
+pwrplantdatats < '$month2' AND meterreading <> 0 AND forplantid='$_POST[plantid]') - (SELECT min(meterreading) as m2 FROM  pwr_plantdata WHERE pwrplantdatats > '2017-06-01' AND 
+pwrplantdatats < '2017-07-01' AND meterreading <> 0 AND forplantid='$_POST[plantid]') AS month;");
    if($row6 = pg_fetch_assoc($result6)) {
 
       $monthly=$row6['month'];
@@ -80,8 +80,8 @@ pwrplantdatats < '$year3' AND meterreading <> 0 AND forplantid='$_POST[plantid]'
       $yearly=$row7['year'];
      }
 
-     $result8 = pg_query($db, "SELECT max(meterreading) as m1 FROM  pwr_plantdata WHERE pwrplantdatats > '$year1' AND 
-pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';");
+     $result8 = pg_query($db, "SELECT max(meterreading) as m1 FROM  pwr_plantdata WHERE meterreading <> 0 AND 
+      forplantid='$_POST[plantid]';");
    if($row8 = pg_fetch_assoc($result8)) {
 
       $total=$row8['m1'];
@@ -105,10 +105,16 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
      {
       $power=$row11['plantpower'];
       $timestamp2=$row11['pwrplantdatats'];
-      $createDate = new DateTime($timestamp2);
-      $time2 = $createDate->format('H:i:s');
+      // $createDate = new DateTime($timestamp2);
+      // $time2 = $createDate->format('H:i:s');
+     }
+     $result12=pg_query($db,"SELECT max(plantpower) as mpr FROM pwr_plantdata WHERE forplantid='$_POST[plantid]';");
+     if($row12=pg_fetch_assoc($result12))
+     {
+      $mxpr=$row12['mpr'];
      }
      $co2s=$co2x*$total;
+
      $reim=$reimx*$total;
      if($irr > 10 && $pwr < 1)
      {
@@ -118,10 +124,15 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
      { 
        $val=2;
       }
-      else
+      elseif($irr > 10 && $pwr > 1)
       {
          $val=1;
-      } 
+      }
+     //  $result12= pg_query($db,"SELECT commissioningdate FROM pwr_plant_additionals WHERE plantid='$_POST[plantid]';");
+     // if($row12=pg_fetch_assoc($result11))
+     // {
+     //  $cd=$row12['commissioningdate'];
+     // }
 ?>
 <!DOCTYPE html>
 <html>
@@ -246,11 +257,11 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
               <div class="radiance col-md-12">
                 <div class="col-md-6">
                   <p class="text-center">Watt/sq.meter</p>
-                  <p class="text-center"><?php echo $time1 ?></p>
+                  <p class="text-center"><?php echo $timestamp1 ?></p>
                 </div>
                 <div class="col-md-6">
                   <p class="text-center">K.Watt </p>
-                  <p class="text-center"><?php echo $time2 ?></p>
+                  <p class="text-center"><?php echo $timestamp2 ?></p>
                 </div>
                 <!-- <div class="col-md-4"><p class="text-center">Percentage</p></div> -->
                 <!-- <p>12:30  <?php echo $time2 ?>  12:32</p> -->
@@ -319,7 +330,7 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
             <div id="monthly1div" class="content col-md-12">
                 <!-- <div id="chart_div"></div> -->
                 
-               <h3>monthly</h3>
+               <?php include 'Monthly.php';?>
             </div>
             <div id="yearly1div" class="content col-md-12">
                 <!-- <div id="chart_div"></div> -->
@@ -382,7 +393,7 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
             duration: 400,
             easing: 'inAndOut',
            },
-          max: <?php echo $maxpr/1000 ?>
+          max: <?php echo $mxpr/1000 ?>
         };
         //   var option3 = {
         //   width: 130, 
