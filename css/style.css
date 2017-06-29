@@ -187,11 +187,11 @@ p1,p2 {
 #back{
   display: none;
 }
-div.chart_div1 table {
+div#chart_div1 table {
     width: auto;
     margin: 0 auto !important;
 }
-div.chart_div2 table {
+div#chart_div2 table {
     width: auto;
     margin: 0 auto !important;
 }

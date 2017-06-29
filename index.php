@@ -149,7 +149,7 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
           </div>
           <div class="col-md-12 text-center plant-selection">
             <form name="insert" class="form-inline" action="index.php" method="POST">
-              <select name="plantid" class="form-control">
+              <select name="plantid" id="plantselect" class="form-control">
                 <option value="1">BMW</option>
                 <option value="9">Brakes India-ABS,Padi</option>
                 <option value="11">BECTON DICKINSON BAWAL</option>
@@ -417,6 +417,9 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
 <script>
   $( document ).ready(function() {
       console.log( "ready!" );
+      var plantid = <?php echo $_POST['plantid'] ?>;
+      console.log(plantid);
+      $('select option[value='+plantid+']').attr("selected",true);
   });
 </script>
 <script type="text/javascript">
