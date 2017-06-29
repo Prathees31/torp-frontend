@@ -219,7 +219,7 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
 
                     $latitude=$row['plantlat'];
                     $longitude=$row['plantlong'];
-                   }echo "src='http://forecast.io/embed/#lat=$latitude&lon=$longitude'";?> >
+                   }echo "src='http://forecast.io/embed/#lat=$latitude&lon=$longitude&units=ca'";?> >
             </iframe>
 
           </div>
