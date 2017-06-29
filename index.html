@@ -146,7 +146,7 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
 						<img src="images/solarpower.jpg" style="width: 219px;" class="plant-image img-responsive center-block" alt="Smiley face">
 					</div>
 					<div class="col-md-12 text-center plant-selection">
-						<form name="insert" class="form-inline" action="index.php" method="POST">
+						<form name="insert" class="form-inline" action="index.html" method="POST">
 							<select name="plantid" class="form-control">
 							  <option value="1">BMW</option>
 							  <option value="9">Brakes India-ABS,Padi</option>
@@ -234,9 +234,11 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
           
 					<div class="col-md-12">
           <hr>
+           <button class="btn btn-default pull-right" type="button" id="back">back</button>
           <div class="odo-content">
 						<div>
 						  <h2 class="text-center">Yield Overview</h2>
+
 						</div>
             
               <div class="col-md-12">
@@ -285,33 +287,25 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
 						</div> -->
             </div>
             <div id="todaydiv" class="content col-md-12">
-              <div>
-                <button class="button pull-right" type="button" id="back">back</button>
-              </div>
+             
               <div id="chart_div" class="col-md-12">
                 
               </div>
             </div>
             <div id="monthlydiv" class="content col-md-12">
                 <!-- <div id="chart_div"></div> -->
-                <div>
-                  <button class="button pull-right" type="button" id="back">back</button>
-                </div>
+                
                <div id="chart_div5" class="col-md-12">
                 
                 </div>
             </div>
             <div id="yearlydiv" class="content col-md-12">
                 <!-- <div id="chart_div"></div> -->
-                <div>
-                <button class="button pull-right" type="button" id="back">back</button>
-              </div>
+                
                 <h3>yearly div</h3>
             </div>
             <div id="totaldiv" class="content col-md-12">
-                <div>
-                <button class="button pull-right" type="button" id="back">back</button>
-              </div>
+                
                 <!-- <div id="chart_div"></div> -->
                 <h3>total div</h3>
             </div>
@@ -387,7 +381,7 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
         ]);
         var option1 = {
           width: 130, 
-          height: 130,
+          height: 240,
           redFrom: 90, 
           redTo: 100,
           yellowFrom:75, 
@@ -456,26 +450,37 @@ pwrplantdatats < NOW() AND meterreading <> 0 AND forplantid='$_POST[plantid]';")
   $(function() {
   $(".button").on("click",function(e) {
     e.preventDefault();
-    $(".content").hide();
+    //$(".content").hide();
+    $(".odo-content").hide();
+    $("#back").show();
     $("#"+this.id+"div").show();
   });
 });
 </script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   $(function() {
   $(".button").on("click",function() {
     $(".odo-content").hide();
   });
 });
-</script>
+</script> -->
 <script type="text/javascript">
   $(function() {
   $("#back").on("click",function() {
-    $("#"+this.id+"div").show();
+    $("#back").hide();
+    $(".content").hide();
     $(".odo-content").show();
   });
 });
 </script>
+<!-- <script type="text/javascript">
+    $(function() {
+  $("#back2").on("click",function() {
+    $(".odo-content").show();
+  });
+});
+
+</script> -->
 
 <script type="text/javascript">
 
