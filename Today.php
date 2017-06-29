@@ -1,10 +1,11 @@
  <?php
  session_start();
+
    $host        = "host = 35.165.7.5";
    $port        = "port = 5432";
    $dbname      = "dbname = plantmgmt";
    $credentials = "user = postgres password=admin";
-   $zero=$one=$two=$three=$four=$five=$six=$seven=$eight=$nine=$ten=$eleven=$twelve=$thirteen=$fourteen=$fifteen=$sixteen=$seventeen=$eighteen=$nineteen=$tzero=$tone=$ttwo=$tthree=0;
+   $zero=$one=$two=$three=$four=$five=$six=$seven=$eight=$nine=$ten=$eleven=$twelve=$thirteen=$fourteen=$fifteen=$sixteen=$seventeen=$eighteen=$nineteen=$tzero=$tone=$ttwo=$tthree;
    $db = pg_connect( "$host $port $dbname $credentials"  );
    if(!$db) {
       echo "Error : Unable to open database"."<br>";
@@ -12,7 +13,6 @@
      //else {
        //echo "Opened database successfully"."<br>";
     //}
-    $pid=9;
     $pid=$_SESSION["pid"];
     $datetime = new DateTime('tomorrow');
     $tomorrow=$datetime->format('Y-m-d');
@@ -24,43 +24,43 @@
    while($row = pg_fetch_assoc($result)) {
 
         $check=(int)date('H:i', strtotime($row['p1']));
-        if($check==00)
+        if($check==0)
         {
          $zero=$row['p2']; 
         }
-        if($check==01)
+        if($check==1)
         {
          $one=$row['p2']; 
         }
-        if($check==02)
+        if($check==2)
         {
          $two=$row['p2']; 
         }
-        if($check==03)
+        if($check==3)
         {
          $three=$row['p2']; 
         }
-        if($check==04)
+        if($check==4)
         {
          $four=$row['p2']; 
         }
-        if($check==05)
+        if($check==5)
         {
          $five=$row['p2']; 
         }
-        if($check==06)
+        if($check==6)
         {
          $six=$row['p2']; 
         }
-        if($check==07)
+        if($check==7)
         {
          $seven=$row['p2']; 
         }
-        if($check==08)
+        if($check==8)
         {
          $eight=$row['p2']; 
         }
-        if($check==09)
+        if($check==9)
         {
          $nine=$row['p2']; 
         }
@@ -166,18 +166,19 @@
                        2]);
 
       var options = {
-        //title: "Density of Precious Metals, in g/cm^3",
-        width: 800,
-        height: 250,
+        title: "Cumulative Energy",
+        width: 700,
+        height: 200,
         bar: {groupWidth: "50%"},
-        legend: { position: "none" },
+         hAxis: {
+          title: 'Time of Day',
+        },
+        vAxis: {
+          title: 'Energy'
+        }
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
       chart.draw(view, options);
   }
-  function goBack() {
-    window.history.back();
-}
   </script>
-<button onclick="document.reload()">Back</button>
-<div id="columnchart_values" style="width: 1000px; height: 400px;"></div>
+<div id="columnchart_values"></div>
